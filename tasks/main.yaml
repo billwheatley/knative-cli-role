@@ -1,0 +1,25 @@
+---
+- name: Download / Install Latest Knative CLI (kn) binary
+  get_url:
+    url:  https://storage.googleapis.com/knative-nightly/client/latest/kn-linux-amd64
+    dest: /usr/local/bin/kn
+    mode: '0555'
+
+- name: 'Ensure the Bash Completion Package is Installed via ({{ ansible_pkg_mgr }})'
+  include_tasks: 'pkg-install-{{ ansible_pkg_mgr }}.yaml'
+  when: ansible_pkg_mgr in ('apt', 'yum', 'dnf')
+
+- fail:
+    msg: WARNING This role is not setup to deal with package manager {{ ansible_pkg_mgr }} can not verify bash-completion Package is installed, bash completions may not work
+  ignore_errors: yes
+  when: ansible_pkg_mgr not in ('apt', 'yum', 'dnf')
+
+- name: Setup bash Completion for kn
+  shell: kn completion bash > /etc/bash_completion.d/kn_completion
+
+- name: Ensure bash Completion Script Has Proper File Permissions
+  file:
+    path: /etc/bash_completion.d/kn_completion
+    owner: root
+    group: root
+    mode: '0644'
