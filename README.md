@@ -1,4 +1,4 @@
-# knative-cli-role
+knative-cli-role
 ===============
 Ansible role to install the x86 Knative CLI (kn) latest nightly build. This will also install bash completion for `kn` (knative CLI) as well.
 
